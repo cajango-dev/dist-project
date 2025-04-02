@@ -6,6 +6,4 @@ as rotas tão todas documentadas nos arquivos /routes em swagger
 
 qualquer coisa só chamar, vou tentar desenrolar os motivos por enquanto,
 
-git clone https://github.com/cajango-dev/dist-backend.git
-
 git checkout dev (vou fazer um branch dev que ai a gente faz o PR só do que tiver bom!)
