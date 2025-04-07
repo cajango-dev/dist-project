@@ -1,9 +1,10 @@
 const express = require('express');
-//const mongoose = require('mongoose');
 const cors = require('cors');
 const swaggerConfig = require('./swagger');
 const fornecedorRoutes = require('./routes/fornecedorRoutes');
 const produtoRoutes = require('./routes/produtoRoutes');
+const pedidoRoutes = require('./routes/pedidoRoutes');
+const relatorioRoutes = require('./routes/relatorioRoutes');
 
 const app = express();
 
@@ -11,21 +12,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conexão com o banco de dados (substitua pela sua string de conexão)
-
-//mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/distribuidora', {
-//    useNewUrlParser: true,
-//    useUnifiedTopology: true
-//})
-//.then(() => console.log('Conectado ao MongoDB'))
-//.catch(err => console.error('Erro na conexão com MongoDB:', err));
+// Configuração do Swagger (ANTES de iniciar o servidor)
+swaggerConfig(app);
 
 // Rotas
 app.use('/api/fornecedores', fornecedorRoutes);
 app.use('/api/produtos', produtoRoutes);
+app.use('/api/pedidos', pedidoRoutes);        // 🛒 Novo endpoint
+app.use('/api/relatorios', relatorioRoutes);  // 📊 Novo endpoint
 
-// Porta
+// Porta do servidor
 const PORT = process.env.PORT || 5000;
-swaggerConfig(app);
-app.listen(PORT, () => console.log(`Documentação rodando em https://localhost:${PORT}/api-docs`));
-app.listen(PORT, () => console.log(`Servidor rodando em https://localhost:${PORT}`));
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+    console.log(`📄 Documentação Swagger disponível em http://localhost:${PORT}/api-docs`);
+});
