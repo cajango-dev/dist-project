@@ -5,7 +5,8 @@
     "main": "src/app.js",
     "scripts": {
         "start": "node src/app.js",
-        "dev": "nodemon src/app.js"
+        "dev": "nodemon src/app.js",
+        "dev:frontend": "vite"
     },
     "dependencies": {
         "cors": "^2.8.5",
@@ -13,10 +14,14 @@
         "express": "^4.17.1",
         "lucide-react": "^0.487.0",
         "mongoose": "^6.0.12",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1"
     },
     "devDependencies": {
-        "nodemon": "^2.0.14"
+        "@vitejs/plugin-react": "^4.3.4",
+        "nodemon": "^2.0.14",
+        "vite": "^6.2.5"
     }
 }
