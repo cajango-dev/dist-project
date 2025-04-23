@@ -1,0 +1,155 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  height: 100%;
+  font-family: sans-serif;
+  background-color: #f4f5f7;
+}
+
+/* Layout principal */
+.home-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #1f3b8c;
+  color: white;
+  padding: 1rem;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* aumentei o espaço entre o ícone e o texto */
+}
+
+/* Navegação lateral */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-nav button {
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar-nav button:hover {
+  text-decoration: underline;
+}
+
+/* Conteúdo principal */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: #f5f6f8;
+  overflow-y: auto;
+  max-width: calc(100vw - 250px);
+}
+
+/* Centralização e limite */
+.section-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Cabeçalho com Início e Conta */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Espaço entre "Início" e "Conta" */
+.header span {
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+/* Cartões de informação */
+.cards {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex: 1 1 300px;
+  max-width: 350px;
+  text-align: center;
+}
+
+/* Cartões de atalho */
+.card.shortcut {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Atalhos */
+.shortcuts {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Remover a "barra branca" visual sob o título Atalhos */
+.section-wrapper h2 {
+  margin-bottom: 1.5rem; /* Espaço natural entre título e os atalhos */
+}
+
+/* Cores */
+.text-yellow {
+  color: #f2aa00;
+  font-weight: bold;
+}
+
+.text-blue {
+  color: #3366ff;
+  font-weight: bold;
+}
+
+.text-green {
+  color: #008800;
+  font-weight: bold;
+}
+
+.number {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}

@@ -1,10 +1,7 @@
-// api/app.js
-import express from 'express';
-import routes from './routes';
+const apiRoutes = require('./api');
+const errorHandler = require('./api/middlewares/errorHandler');
+const swaggerSetup = require('./api/swagger');
 
-app.use('/api', routes);
-
-const app = express();
-app.use(express.json());
-app.use('/api', routes);
-export default app;
+app.use('/api', apiRoutes);
+app.use(errorHandler);
+swaggerSetup(app);
