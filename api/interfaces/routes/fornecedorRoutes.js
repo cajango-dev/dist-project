@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router = express.Router();
-const fornecedorController = require('../controllers/fornecedorController');
+const fornecedorController = require('../../controllers/fornecedorController');
 
 /**
  * @swagger
