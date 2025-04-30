@@ -30,25 +30,25 @@ export default function Fornecedores({ onChangePage }) {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
-          <button>
+          <button onClick={() => onChangePage("gestaoProdutos")}>
             <Package /> Produtos
           </button>
-          <button>
+          <button onClick={() => onChangePage("entradas")}>
             <ArrowDown /> Entradas
           </button>
-          <button>
+          <button onClick={() => onChangePage("saidas")}>
             <ArrowUp /> Saídas
           </button>
-          <button>
+          <button onClick={() => onChangePage("clientes")}>
             <Users /> Clientes
           </button>
-          <button className="active">
+          <button className="active" onClick={() => onChangePage("fornecedores")}>
             <Truck /> Fornecedores
           </button>
-          <button>
+          <button onClick={() => onChangePage("suporte")}>
             <LifeBuoy /> Suporte
           </button>
-          <button>
+          <button onClick={() => onChangePage("feedback")}>
             <MessageSquare /> Feedback
           </button>
         </nav>

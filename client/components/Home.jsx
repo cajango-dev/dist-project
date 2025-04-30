@@ -19,7 +19,7 @@ export default function Home({ onChangePage }) {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
-          <button>
+          <button onClick={() => onChangePage('gestaoProdutos')}>
             <Package /> Produtos
           </button>
           <button>
@@ -73,7 +73,7 @@ export default function Home({ onChangePage }) {
         <section className="section-wrapper">
           <h2>Atalhos</h2>
           <div className="shortcuts">
-            <div className="card shortcut">
+            <div className="card shortcut" onClick={() => onChangePage("gestaoProdutos")}>
               <Package size={32} />
               <p>Produtos</p>
             </div>
