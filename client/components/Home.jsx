@@ -10,7 +10,7 @@ import {
   Menu,
 } from "lucide-react";
 
-export default function Home() {
+export default function Home({ onChangePage }) {
   return (
     <div className="home-container">
       {/* Sidebar */}
@@ -31,7 +31,7 @@ export default function Home() {
           <button>
             <Users /> Clientes
           </button>
-          <button>
+          <button onClick={() => onChangePage("fornecedores")}>
             <Truck /> Fornecedores
           </button>
           <button>
