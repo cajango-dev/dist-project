@@ -59,5 +59,8 @@ Todos usando Mongoose + MongoDB, com relacionamentos via ObjectId.
 - Incrementa número de pedidos
 - Atualiza quantidade vendida por produto
 
-Consulta em:
+------
+O código do Banco ta com o VINI,
+acho que você vai ter que criar um /database na pasta api, ligar os CRUDS no banco, se quiser gerar dados 
+ficticios, usa o mockaroo.com, bem tranquilo pra preencher dados.
 
