@@ -3,6 +3,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home'; 
+import Fornecedores from './components/Fornecedores';
+import GestaoProdutos from './components/GestaoProdutos';
 import './App.css';
 
 function App() {
@@ -29,6 +31,12 @@ function App() {
       )}
       {page === 'home' && (
         <Home onChangePage={setPage} /> 
+      )}
+      {page === 'fornecedores' && (
+        <Fornecedores onChangePage={setPage} />
+      )}
+      {page === 'gestaoProdutos' && (
+        <GestaoProdutos onChangePage={setPage} />
       )}
       <div className="footer">Desenvolvido..</div>
     </div>

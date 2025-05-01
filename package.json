@@ -2,10 +2,10 @@
     "name": "distribuidora-backend",
     "version": "1.0.0",
     "description": "Backend para sistema de distribuidora de bebidas",
-    "main": "src/app.js",
+    "main": "api/app.js",
     "scripts": {
-        "start": "node src/app.js",
-        "dev": "nodemon src/app.js",
+        "start": "node api/app.js",
+        "dev": "nodemon api/app.js",
         "dev:frontend": "vite"
     },
     "dependencies": {
@@ -20,8 +20,8 @@
         "swagger-ui-express": "^5.0.1"
     },
     "devDependencies": {
-        "@vitejs/plugin-react": "^4.3.4",
+        "@vitejs/plugin-react": "^4.4.1",
         "nodemon": "^2.0.14",
-        "vite": "^6.2.5"
+        "vite": "^6.3.3"
     }
 }

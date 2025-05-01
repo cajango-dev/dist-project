@@ -1,0 +1,70 @@
+/* Fornecedores */
+.card-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+  }
+  
+  .card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex: 1 1 300px;
+    max-width: 350px;
+    text-align: center;
+  }
+  
+  .card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .card p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .card .text-green {
+    color: #008800;
+    font-weight: bold;
+  }
+  
+  .card .text-red {
+    color: #ff0000;
+    font-weight: bold;
+  }
+  
+  .card .edit-button {
+    background-color: #3366ff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .card .edit-button:hover {
+    background-color: #1f3b8c;
+  }
+  
+  /* Botão de adicionar fornecedor */
+  .add-button {
+    background-color: #f2aa00;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin: 1rem 0;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .add-button:hover {
+    background-color: #e18b00;
+  }
+  

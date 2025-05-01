@@ -10,7 +10,7 @@ import {
   Menu,
 } from "lucide-react";
 
-export default function Home() {
+export default function Home({ onChangePage }) {
   return (
     <div className="home-container">
       {/* Sidebar */}
@@ -19,7 +19,7 @@ export default function Home() {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
-          <button>
+          <button onClick={() => onChangePage('gestaoProdutos')}>
             <Package /> Produtos
           </button>
           <button>
@@ -31,7 +31,7 @@ export default function Home() {
           <button>
             <Users /> Clientes
           </button>
-          <button>
+          <button onClick={() => onChangePage("fornecedores")}>
             <Truck /> Fornecedores
           </button>
           <button>
@@ -73,7 +73,7 @@ export default function Home() {
         <section className="section-wrapper">
           <h2>Atalhos</h2>
           <div className="shortcuts">
-            <div className="card shortcut">
+            <div className="card shortcut" onClick={() => onChangePage("gestaoProdutos")}>
               <Package size={32} />
               <p>Produtos</p>
             </div>
