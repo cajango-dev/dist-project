@@ -1,10 +1,22 @@
 const mongoose = require('mongoose');
 
 const supplierSchema = new mongoose.Schema({
-    nome: { type: String, required: true },
-    contato: { type: String },
-    email: { type: String },
-    endereco: { type: String }
-}, { timestamps: true });
+  nome: {
+    type: String,
+    required: true
+  },
+  cnpj: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  status: {
+    type: String,
+    enum: ['Ativo', 'Inativo'],
+    required: true
+  }
+});
 
-module.exports = mongoose.model('Supplier', supplierSchema);
+const Supplier = mongoose.model('Supplier', supplierSchema);
+
+module.exports = Supplier;

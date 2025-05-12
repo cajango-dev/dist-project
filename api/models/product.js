@@ -5,7 +5,9 @@ const productSchema = new mongoose.Schema({
     descricao: { type: String },
     preco: { type: Number, required: true },
     estoque: { type: Number, required: true },
+    categoria: { type: String }, 
     fornecedor: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier' }
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('Product', productSchema);

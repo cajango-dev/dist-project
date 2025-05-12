@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Importando o axios para fazer requisições HTTP
 import "./Home.css";
 import {
   Package,
@@ -12,6 +13,22 @@ import {
 } from "lucide-react";
 
 export default function Fornecedores({ onChangePage }) {
+  const [fornecedores, setFornecedores] = useState([]); // Estado para armazenar os fornecedores
+
+  useEffect(() => {
+    // Função para buscar fornecedores do back-end
+    const fetchFornecedores = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/suppliers"); // URL back-end
+        setFornecedores(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar fornecedores:", error);
+      }
+    };
+
+    fetchFornecedores(); 
+  }, []);
+
   const handleEditFornecedor = (id) => {
     console.log(`Editar fornecedor ID: ${id}`);
     // Aqui você pode abrir um modal ou redirecionar para tela de edição
@@ -75,22 +92,20 @@ export default function Fornecedores({ onChangePage }) {
 
           {/* Lista de Fornecedores */}
           <div className="card-list">
-            <div className="card">
-              <h3>Fornecedor 1</h3>
-              <p>CNPJ: 12.345.678/0001-99</p>
-              <p>Status: <span className="text-green">Ativo</span></p>
-              <button className="edit-button" onClick={() => handleEditFornecedor(1)}>
-                Editar
-              </button>
-            </div>
-            <div className="card">
-              <h3>Fornecedor 2</h3>
-              <p>CNPJ: 98.765.432/0001-01</p>
-              <p>Status: <span className="text-red">Inativo</span></p>
-              <button className="edit-button" onClick={() => handleEditFornecedor(2)}>
-                Editar
-              </button>
-            </div>
+            {fornecedores.length > 0 ? (
+              fornecedores.map((fornecedor) => (
+                <div key={fornecedor._id} className="card">
+                  <h3>{fornecedor.nome}</h3>
+                  <p>CNPJ: {fornecedor.cnpj}</p>
+                  <p>Status: <span className={fornecedor.status === "Ativo" ? "text-green" : "text-red"}>{fornecedor.status}</span></p>
+                  <button className="edit-button" onClick={() => handleEditFornecedor(fornecedor._id)}>
+                    Editar
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>Carregando fornecedores...</p>
+            )}
           </div>
         </section>
 

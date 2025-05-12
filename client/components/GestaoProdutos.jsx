@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Menu,
   Package,
@@ -12,13 +13,19 @@ import {
 import './GestaoProdutos.css';
 
 const GestaoProdutos = ({ onChangePage }) => {
-  const [produtos, setProdutos] = useState([
-    { id: 1, nome: 'Refrigerante Cola', categoria: 'Bebida', quantidade: 50, preco: 5.99 },
-    { id: 2, nome: 'Cerveja Pilsen', categoria: 'Alcoólico', quantidade: 30, preco: 3.49 },
-  ]);
-
-  const [form, setForm] = useState({ id: null, nome: '', categoria: '', quantidade: '', preco: '' });
+  const [produtos, setProdutos] = useState([]);
+  const [form, setForm] = useState({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/products') 
+      .then((res) => {
+        setProdutos(res.data); 
+      })
+      .catch((err) => {
+        console.error('Erro ao buscar produtos:', err);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +35,7 @@ const GestaoProdutos = ({ onChangePage }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.nome || !form.categoria || !form.quantidade || !form.preco) {
+    if (!form.nome || !form.categoria || !form.estoque || !form.preco) {
       return alert('Preencha todos os campos.');
     }
 
@@ -36,7 +43,7 @@ const GestaoProdutos = ({ onChangePage }) => {
       if (window.confirm('Tem certeza que deseja editar este produto?')) {
         setProdutos((prev) =>
           prev.map((p) =>
-            p.id === form.id ? { ...form, quantidade: +form.quantidade, preco: +form.preco } : p
+            p.id === form.id ? { ...form, estoque: +form.estoque, preco: +form.preco } : p
           )
         );
         setModoEdicao(false);
@@ -45,13 +52,13 @@ const GestaoProdutos = ({ onChangePage }) => {
       const novoProduto = {
         ...form,
         id: Date.now(),
-        quantidade: +form.quantidade,
+        estoque: +form.estoque,
         preco: +form.preco,
       };
       setProdutos((prev) => [...prev, novoProduto]);
     }
 
-    setForm({ id: null, nome: '', categoria: '', quantidade: '', preco: '' });
+    setForm({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
   };
 
   const editarProduto = (produto) => {
@@ -83,7 +90,6 @@ const GestaoProdutos = ({ onChangePage }) => {
       </aside>
 
       <main className="main-content">
-        {/* Novo cabeçalho padronizado */}
         <header className="section-wrapper header">
           <h1>Produtos</h1>
           <div>
@@ -111,9 +117,9 @@ const GestaoProdutos = ({ onChangePage }) => {
           />
           <input
             type="number"
-            name="quantidade"
+            name="estoque"
             placeholder="Quantidade"
-            value={form.quantidade}
+            value={form.estoque}
             onChange={handleChange}
           />
           <input
@@ -144,7 +150,7 @@ const GestaoProdutos = ({ onChangePage }) => {
               <tr key={p.id}>
                 <td>{p.nome}</td>
                 <td>{p.categoria}</td>
-                <td>{p.quantidade}</td>
+                <td>{p.estoque}</td>
                 <td>{p.preco.toFixed(2)}</td>
                 <td>
                   <button className="editar" onClick={() => editarProduto(p)}>Editar</button>
