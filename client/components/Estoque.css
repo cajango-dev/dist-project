@@ -1,0 +1,161 @@
+.gestao-layout {
+    display: flex;
+    height: 100vh;
+    background-color: #f1f5f9;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .sidebar {
+    width: 220px;
+    background-color: #2563eb; /* Azul original */
+    color: white;
+    padding: 1rem;
+    display: flex;
+  }
+  
+  .sidebar-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+  }
+  
+  .sidebar-nav button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: none;
+    color: white;
+    border: none;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  
+  .sidebar-nav button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .gestao-main {
+    flex: 1;
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-y: auto;
+  }
+  
+  .voltar-btn {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    background: transparent;
+    border: none;
+    color: #1f2937;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  
+  h2 {
+    margin-bottom: 2rem;
+    text-align: left;
+    font-size: 1.6rem;
+  }
+  
+  .form-produto {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    width: 100%;
+  }
+  
+  .form-produto input,
+  .form-produto button {
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.9rem;
+  }
+  
+  .form-produto button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    grid-column: span 2;
+    transition: background 0.2s;
+  }
+  
+  .form-produto button:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .tabela-produtos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .tabela-produtos th,
+  .tabela-produtos td {
+    padding: 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .tabela-produtos th {
+    background-color: #f8fafc;
+  }
+  
+  .editar, .excluir {
+    padding: 0.4rem 0.8rem;
+    margin-right: 0.4rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  
+  .editar {
+    background-color: #4ade80;
+    color: white;
+  }
+  
+  .excluir {
+    background-color: #f87171;
+    color: white;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header div span {
+    margin-left: 1rem;
+    cursor: pointer;
+  }
+  
+  .voltar-link:hover {
+    text-decoration: underline;
+  }

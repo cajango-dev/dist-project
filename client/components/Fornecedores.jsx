@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Home.css";
+import "./Fornecedores.css";
 import {
   Package,
   ArrowDown,
@@ -9,6 +9,7 @@ import {
   Truck,
   LifeBuoy,
   MessageSquare,
+  Warehouse,
   Menu,
 } from "lucide-react";
 
@@ -69,6 +70,7 @@ export default function Fornecedores({ onChangePage }) {
         </div>
         <nav className="sidebar-nav">
           <button onClick={() => onChangePage("gestaoProdutos")}><Package /> Produtos</button>
+          <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
           <button onClick={() => onChangePage("entradas")}><ArrowDown /> Entradas</button>
           <button onClick={() => onChangePage("saidas")}><ArrowUp /> Saídas</button>
           <button onClick={() => onChangePage("clientes")}><Users /> Clientes</button>
@@ -93,17 +95,24 @@ export default function Fornecedores({ onChangePage }) {
           <div className="card-list">
             {fornecedores.length > 0 ? (
               fornecedores.map((fornecedor) => (
-                <div key={fornecedor._id} className="card">
-                  <h3>{fornecedor.nome}</h3>
-                  <p>CNPJ: {fornecedor.cnpj}</p>
-                  <p>Status: <span className={fornecedor.status === "Ativo" ? "text-green" : "text-red"}>{fornecedor.status}</span></p>
-                  <button className="edit-button" onClick={() => handleEditFornecedor(fornecedor._id)}>Editar</button>
+                <div key={fornecedor._id} className="card card-shadow">
+                  <div className="card-header">
+                    <h3>{fornecedor.nome}</h3>
+                  </div>
+                  <div className="card-body">
+                    <p><strong>CNPJ:</strong> {fornecedor.cnpj}</p>
+                    <p><strong>Status:</strong> <span className={fornecedor.status === "Ativo" ? "text-green" : "text-red"}>{fornecedor.status}</span></p>
+                  </div>
+                  <div className="card-footer">
+                    <button className="btn btn-edit" onClick={() => handleEditFornecedor(fornecedor._id)}>Editar</button>
+                  </div>
                 </div>
               ))
             ) : (
               <p>Carregando fornecedores...</p>
             )}
           </div>
+
         </section>
 
         <section className="section-wrapper">

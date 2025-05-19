@@ -11,21 +11,18 @@ import {
   Warehouse,
   MessageSquare
 } from 'lucide-react';
-import './GestaoProdutos.css';
+import './Estoque.css'; 
 
-const GestaoProdutos = ({ onChangePage }) => {
-  const [produtos, setProdutos] = useState([]);
-  const [form, setForm] = useState({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
+const Estoque = ({ onChangePage }) => {
+  const [estoque, setEstoque] = useState([]);
+  const [form, setForm] = useState({ id: null, produto: '', quantidade: '', local: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
+  const [filtro, setFiltro] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3000/products') 
-      .then((res) => {
-        setProdutos(res.data); 
-      })
-      .catch((err) => {
-        console.error('Erro ao buscar produtos:', err);
-      });
+    axios.get('http://localhost:3000/estoque')
+      .then((res) => setEstoque(res.data))
+      .catch((err) => console.error('Erro ao buscar estoque:', err));
   }, []);
 
   const handleChange = (e) => {
@@ -36,42 +33,45 @@ const GestaoProdutos = ({ onChangePage }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.nome || !form.categoria || !form.estoque || !form.preco) {
+    if (!form.produto || !form.quantidade || !form.local) {
       return alert('Preencha todos os campos.');
     }
 
     if (modoEdicao) {
-      if (window.confirm('Tem certeza que deseja editar este produto?')) {
-        setProdutos((prev) =>
-          prev.map((p) =>
-            p.id === form.id ? { ...form, estoque: +form.estoque, preco: +form.preco } : p
+      if (window.confirm('Confirmar edição do item de estoque?')) {
+        setEstoque((prev) =>
+          prev.map((item) =>
+            item.id === form.id ? { ...form, quantidade: +form.quantidade } : item
           )
         );
         setModoEdicao(false);
       }
     } else {
-      const novoProduto = {
+      const novoItem = {
         ...form,
         id: Date.now(),
-        estoque: +form.estoque,
-        preco: +form.preco,
+        quantidade: +form.quantidade,
       };
-      setProdutos((prev) => [...prev, novoProduto]);
+      setEstoque((prev) => [...prev, novoItem]);
     }
 
-    setForm({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
+    setForm({ id: null, produto: '', quantidade: '', local: '' });
   };
 
-  const editarProduto = (produto) => {
-    setForm(produto);
+  const editarItem = (item) => {
+    setForm(item);
     setModoEdicao(true);
   };
 
-  const excluirProduto = (id) => {
-    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      setProdutos((prev) => prev.filter((p) => p.id !== id));
+  const excluirItem = (id) => {
+    if (window.confirm('Deseja remover este item do estoque?')) {
+      setEstoque((prev) => prev.filter((i) => i.id !== id));
     }
   };
+
+  const estoqueFiltrado = estoque.filter((item) =>
+    item.produto.toLowerCase().includes(filtro.toLowerCase())
+  );
 
   return (
     <div className="home-container">
@@ -81,7 +81,7 @@ const GestaoProdutos = ({ onChangePage }) => {
         </div>
         <nav className="sidebar-nav">
           <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
-          <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
+          <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque </button>
           <button onClick={() => onChangePage('entradas')}><ArrowDown /> Entradas</button>
           <button onClick={() => onChangePage('saidas')}><ArrowUp /> Saídas</button>
           <button onClick={() => onChangePage('clientes')}><Users /> Clientes</button>
@@ -93,70 +93,66 @@ const GestaoProdutos = ({ onChangePage }) => {
 
       <main className="main-content">
         <header className="section-wrapper header">
-          <h1>Produtos</h1>
+          <h1>Estoque</h1>
           <div>
-            <span className="voltar-link" onClick={() => onChangePage("home")}>
-              Início
-            </span>
+            <span className="voltar-link" onClick={() => onChangePage("home")}>Início</span>
             <span>Conta</span>
           </div>
         </header>
 
+        <input
+          type="text"
+          placeholder="Pesquisar produto..."
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+          style={{ padding: '0.6rem', borderRadius: '8px', border: '1px solid #ccc', marginBottom: '1rem', width: '100%' }}
+        />
+
         <form className="form-produto" onSubmit={handleSubmit}>
           <input
             type="text"
-            name="nome"
+            name="produto"
             placeholder="Nome do produto"
-            value={form.nome}
+            value={form.produto}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="quantidade"
+            placeholder="Quantidade"
+            value={form.quantidade}
             onChange={handleChange}
           />
           <input
             type="text"
-            name="categoria"
-            placeholder="Categoria"
-            value={form.categoria}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="estoque"
-            placeholder="Quantidade"
-            value={form.estoque}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            step="0.01"
-            name="preco"
-            placeholder="Preço"
-            value={form.preco}
+            name="local"
+            placeholder="Local de Armazenamento"
+            value={form.local}
             onChange={handleChange}
           />
           <button type="submit">
-            {modoEdicao ? 'Salvar Edição' : 'Adicionar Produto'}
+            {modoEdicao ? 'Salvar Edição' : 'Adicionar ao Estoque'}
           </button>
         </form>
 
         <table className="tabela-produtos">
           <thead>
             <tr>
-              <th>Nome</th>
-              <th>Categoria</th>
+              <th>Produto</th>
               <th>Quantidade</th>
-              <th>Preço (R$)</th>
+              <th>Local</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {produtos.map((p) => (
-              <tr key={p.id}>
-                <td>{p.nome}</td>
-                <td>{p.categoria}</td>
-                <td>{p.estoque}</td>
-                <td>{p.preco.toFixed(2)}</td>
+            {estoqueFiltrado.map((item) => (
+              <tr key={item.id}>
+                <td>{item.produto}</td>
+                <td>{item.quantidade}</td>
+                <td>{item.local}</td>
                 <td>
-                  <button className="editar" onClick={() => editarProduto(p)}>Editar</button>
-                  <button className="excluir" onClick={() => excluirProduto(p.id)}>Excluir</button>
+                  <button className="editar" onClick={() => editarItem(item)}>Editar</button>
+                  <button className="excluir" onClick={() => excluirItem(item.id)}>Excluir</button>
                 </td>
               </tr>
             ))}
@@ -167,4 +163,4 @@ const GestaoProdutos = ({ onChangePage }) => {
   );
 };
 
-export default GestaoProdutos;
+export default Estoque;

@@ -9,6 +9,7 @@ import {
   LifeBuoy,
   MessageSquare,
   Menu,
+  Warehouse,
 } from "lucide-react";
 
 export default function Home({ onChangePage }) {
@@ -22,6 +23,9 @@ export default function Home({ onChangePage }) {
         <nav className="sidebar-nav">
           <button onClick={() => onChangePage('gestaoProdutos')}>
             <Package /> Produtos
+          </button>
+          <button onClick={() => onChangePage("estoque")}>
+            <Warehouse /> Estoque
           </button>
           <button>
             <ArrowDown /> Entradas

@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import Home from './components/Home'; 
 import Fornecedores from './components/Fornecedores';
 import GestaoProdutos from './components/GestaoProdutos';
+import Estoque from './components/Estoque';
 import './App.css';
 
 function App() {
@@ -37,6 +38,9 @@ function App() {
       )}
       {page === 'gestaoProdutos' && (
         <GestaoProdutos onChangePage={setPage} />
+      )}
+      {page === 'estoque' && (
+        <Estoque onChangePage={setPage} />
       )}
       <div className="footer">Desenvolvido..</div>
     </div>
