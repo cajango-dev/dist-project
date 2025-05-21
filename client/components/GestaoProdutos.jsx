@@ -15,13 +15,24 @@ import './GestaoProdutos.css';
 
 const GestaoProdutos = ({ onChangePage }) => {
   const [produtos, setProdutos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [form, setForm] = useState({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
 
+  // Novos estados para filtro
+  const [filtroNome, setFiltroNome] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState(''); // '' significa todas categorias
+
   useEffect(() => {
-    axios.get('http://localhost:3000/products') 
+    axios.get('http://localhost:3000/products')
       .then((res) => {
-        setProdutos(res.data); 
+        setProdutos(res.data);
+
+        // Extração das categorias únicas
+        const categoriasUnicas = [
+          ...new Set(res.data.map((produto) => produto.categoria).filter(Boolean))
+        ];
+        setCategorias(categoriasUnicas);
       })
       .catch((err) => {
         console.error('Erro ao buscar produtos:', err);
@@ -57,6 +68,11 @@ const GestaoProdutos = ({ onChangePage }) => {
         preco: +form.preco,
       };
       setProdutos((prev) => [...prev, novoProduto]);
+
+      // Atualiza a lista de categorias se for uma nova
+      if (!categorias.includes(form.categoria)) {
+        setCategorias((prev) => [...prev, form.categoria]);
+      }
     }
 
     setForm({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
@@ -72,6 +88,13 @@ const GestaoProdutos = ({ onChangePage }) => {
       setProdutos((prev) => prev.filter((p) => p.id !== id));
     }
   };
+
+  // Filtra produtos conforme os filtros ativos
+  const produtosFiltrados = produtos.filter((p) => {
+    const nomeMatch = p.nome.toLowerCase().includes(filtroNome.toLowerCase());
+    const categoriaMatch = filtroCategoria ? p.categoria === filtroCategoria : true;
+    return nomeMatch && categoriaMatch;
+  });
 
   return (
     <div className="home-container">
@@ -110,13 +133,17 @@ const GestaoProdutos = ({ onChangePage }) => {
             value={form.nome}
             onChange={handleChange}
           />
-          <input
-            type="text"
+          <select
             name="categoria"
-            placeholder="Categoria"
             value={form.categoria}
             onChange={handleChange}
-          />
+            className="dropdown-categoria"
+          >
+            <option value="">Categoria</option>
+            {categorias.map((cat, index) => (
+              <option key={index} value={cat}>{cat}</option>
+            ))}
+          </select>
           <input
             type="number"
             name="estoque"
@@ -137,6 +164,20 @@ const GestaoProdutos = ({ onChangePage }) => {
           </button>
         </form>
 
+        {/* === CONTAINER DE FILTRO ADICIONADO === */}
+        <div className="filtro-container" style={{ marginTop: 20, marginBottom: 20 }}>
+          <select
+            value={filtroCategoria}
+            onChange={(e) => setFiltroCategoria(e.target.value)}
+            style={{ padding: '5px' }}
+          >
+            <option value="">Todos</option>
+            {categorias.map((cat, index) => (
+              <option key={index} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+
         <table className="tabela-produtos">
           <thead>
             <tr>
@@ -148,7 +189,7 @@ const GestaoProdutos = ({ onChangePage }) => {
             </tr>
           </thead>
           <tbody>
-            {produtos.map((p) => (
+            {produtosFiltrados.map((p) => (
               <tr key={p.id}>
                 <td>{p.nome}</td>
                 <td>{p.categoria}</td>
