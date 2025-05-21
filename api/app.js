@@ -39,4 +39,4 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 app.use((err, req, res, next) => {
     console.error('Erro interno:', err);
     res.status(500).json({ error: 'Erro interno do servidor' });
-  });
+});
