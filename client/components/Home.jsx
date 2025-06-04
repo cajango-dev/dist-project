@@ -14,6 +14,8 @@ import {
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -45,6 +47,30 @@ const todosProdutos = [
 ];
 
 const categorias = ["Todos", "Cervejas", "Refrigerantes", "Destilados", "Outros"];
+
+// Adicione logo abaixo de `const categorias = [...]`:
+const dadosGrafico = [
+  { nome: "Cerveja Heineken 600ml", quantidade: 300 },
+  { nome: "Refrigerante Coca-Cola 2L", quantidade: 280 },
+  { nome: "Água Mineral sem Gás 500ml", quantidade: 150 },
+  { nome: "Cerveja Skol Lata 350ml", quantidade: 240 },
+  { nome: "Whisky Johnnie Walker Red Label 1L", quantidade: 90 },
+  { nome: "Vodka Smirnoff 998ml", quantidade: 100 },
+  { nome: "Suco de Laranja Natural One 900ml", quantidade: 130 },
+  { nome: "Energético Red Bull 250ml", quantidade: 180 },
+  { nome: "Cerveja Brahma Chopp 1L", quantidade: 190 },
+  { nome: "Guaraná Antarctica 350ml", quantidade: 170 },
+  { nome: "Espumante Chandon Brut 750ml", quantidade: 70 },
+  { nome: "Vinho Chileno Gato Negro 750ml", quantidade: 85 },
+  { nome: "Água Tônica Schweppes 350ml", quantidade: 120 },
+  { nome: "Cerveja Corona Extra 330ml", quantidade: 160 },
+  { nome: "Refrigerante Pepsi Twist 2L", quantidade: 210 },
+  { nome: "Catuaba Selvagem 1L", quantidade: 95 },
+  { nome: "Ice Smirnoff Sabor Limão 275ml", quantidade: 80 },
+  { nome: "Gin Tanqueray 750ml", quantidade: 60 },
+  { nome: "Cerveja Stella Artois 550ml", quantidade: 140 },
+  { nome: "Refrigerante Sprite 600ml", quantidade: 200 },
+];
 
 export default function Home({ onChangePage }) {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
@@ -189,20 +215,33 @@ export default function Home({ onChangePage }) {
         </section>
 
         <section className="section-wrapper">
-          <h2>Atalhos</h2>
-          <div className="shortcuts">
-            <div className="card shortcut" onClick={() => onChangePage("gestaoProdutos")}>
-              <Package size={32} />
-              <p>Produtos</p>
-            </div>
-            <div className="card shortcut">
-              <ArrowDown size={32} />
-              <p>Entradas</p>
-            </div>
-            <div className="card shortcut">
-              <ArrowUp size={32} />
-              <p>Saídas</p>
-            </div>
+          <h2>Vendas por Produto</h2>
+          <div style={{ width: "100%", height: 500 }}>
+            <ResponsiveContainer>
+              <LineChart
+                data={dadosGrafico}
+                margin={{ top: 20, right: 30, left: 20, bottom: 120 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="nome"
+                  angle={-45}
+                  textAnchor="end"
+                  interval={0}
+                  height={120}
+                  tick={{ fontSize: 10 }}
+                />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="quantidade"
+                  stroke="#8884d8"
+                  strokeWidth={2}
+                  dot={{ r: 6, fill: "#8884d8" }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </section>
       </main>
