@@ -153,3 +153,9 @@ body, html, #root {
   font-weight: bold;
   margin-top: 0.5rem;
 }
+
+/* Gráfico */
+.recharts-wrapper {
+  margin-top: 1rem;
+}
+

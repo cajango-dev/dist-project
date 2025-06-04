@@ -18,6 +18,7 @@
         "mongoose": "^6.0.12",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
+        "recharts": "^2.15.3",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1"
     },
