@@ -47,7 +47,7 @@ const GestaoProdutos = ({ onChangePage }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.nome || !form.categoria || !form.estoque || !form.preco) {
+    if (!form.nome || !form.categoria || !form.preco) {
       return alert('Preencha todos os campos.');
     }
 
@@ -55,7 +55,7 @@ const GestaoProdutos = ({ onChangePage }) => {
       if (window.confirm('Tem certeza que deseja editar este produto?')) {
         setProdutos((prev) =>
           prev.map((p) =>
-            p.id === form.id ? { ...form, estoque: +form.estoque, preco: +form.preco } : p
+            p.id === form.id ? { ...form, preco: +form.preco } : p
           )
         );
         setModoEdicao(false);
@@ -64,7 +64,6 @@ const GestaoProdutos = ({ onChangePage }) => {
       const novoProduto = {
         ...form,
         id: Date.now(),
-        estoque: +form.estoque,
         preco: +form.preco,
       };
       setProdutos((prev) => [...prev, novoProduto]);
@@ -75,7 +74,7 @@ const GestaoProdutos = ({ onChangePage }) => {
       }
     }
 
-    setForm({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
+    setForm({ id: null, nome: '', categoria: '',  preco: '' });
   };
 
   const editarProduto = (produto) => {
@@ -146,13 +145,6 @@ const GestaoProdutos = ({ onChangePage }) => {
           </select>
           <input
             type="number"
-            name="estoque"
-            placeholder="Quantidade"
-            value={form.estoque}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
             step="0.01"
             name="preco"
             placeholder="Preço"
@@ -183,7 +175,6 @@ const GestaoProdutos = ({ onChangePage }) => {
             <tr>
               <th>Nome</th>
               <th>Categoria</th>
-              <th>Quantidade</th>
               <th>Preço (R$)</th>
               <th>Ações</th>
             </tr>
@@ -193,7 +184,6 @@ const GestaoProdutos = ({ onChangePage }) => {
               <tr key={p.id}>
                 <td>{p.nome}</td>
                 <td>{p.categoria}</td>
-                <td>{p.estoque}</td>
                 <td>{p.preco.toFixed(2)}</td>
                 <td>
                   <button className="editar" onClick={() => editarProduto(p)}>Editar</button>
