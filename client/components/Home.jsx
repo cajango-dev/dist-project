@@ -104,7 +104,7 @@ export default function Home({ onChangePage }) {
           <button>
             <ArrowUp /> Saídas
           </button>
-          <button>
+          <button onClick={() => onChangePage("clientes")}>
             <Users /> Clientes
           </button>
           <button onClick={() => onChangePage("fornecedores")}>
