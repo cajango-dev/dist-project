@@ -1,54 +1,54 @@
 const { supabase } = require('../supabaseClient');
 
-class User {
+class Table {
     static async list() {
-        const { data, error } = await supabase.from('usuario').select('*');
+        const { data, error } = await supabase.from('mesa').select('*');
         if (error) throw new Error(error.message);
         return data;
     }
 
-    static async getById(id_usuario) {
+    static async getById(id_mesa) {
         const { data, error } = await supabase
-            .from('usuario')
+            .from('mesa')
             .select('*')
-            .eq('id_usuario', id_usuario)
+            .eq('id_mesa', id_mesa)
             .single();
         if (error) throw new Error(error.message);
         return data;
     }
 
-    static async create({ id_usuario, nome, cargo, senha_hash }) {
+    static async create({ numero, status, qtd_pessoas }) {
         const { data, error } = await supabase
-            .from('usuario')
-            .insert([{ id_usuario, nome, cargo, senha_hash }])
+            .from('mesa')
+            .insert([{ numero, status, qtd_pessoas }])
             .select();
         if (error) throw new Error(error.message);
         return data[0];
     }
 
-    static async update(id_usuario, updateData) {
-        Object.keys(updateData).forEach(key => {
+    static async update(id_mesa, updateData) {
+        Object.keys(updateData).forEach((key) => {
             if (updateData[key] === undefined) delete updateData[key];
         });
 
         const { data, error } = await supabase
-            .from('usuario')
+            .from('mesa')
             .update(updateData)
-            .eq('id_usuario', id_usuario)
+            .eq('id_mesa', id_mesa)
             .select()
             .single();
         if (error) throw new Error(error.message);
         return data;
     }
 
-    static async delete(id_usuario) {
+    static async delete(id_mesa) {
         const { error } = await supabase
-            .from('usuario')
+            .from('mesa')
             .delete()
-            .eq('id_usuario', id_usuario);
+            .eq('id_mesa', id_mesa);
         if (error) throw new Error(error.message);
-        return { message: 'Usuário deletado com sucesso' };
+        return { message: 'Mesa deletada com sucesso' };
     }
 }
 
-module.exports = User;
+module.exports = Table;

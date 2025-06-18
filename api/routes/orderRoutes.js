@@ -1,37 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../supabaseClient');
+const OrderController = require('../controllers/orderController');
 
-// Rota GET para listar todos os usuários
-router.get('/', async (req, res) => {
-  try {
-    const { data, error } = await supabase.from('usuario').select('*');
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: 'Erro interno' });
-  }
-});
+// GET - Lista todos os pedidos
+router.get('/', OrderController.listOrders);
 
-// Rota POST para criar um novo usuário
-router.post('/', async (req, res) => {
-  try {
-    const { id_usuario, nome, cargo, senha_hash } = req.body;
+// GET - Obter pedido por ID
+router.get('/:id', OrderController.getOrderById);
 
-    if (!id_usuario || !nome || !cargo || !senha_hash) {
-      return res.status(400).json({ error: 'Todos os campos são obrigatórios: id_usuario, nome, cargo, senha_hash' });
-    }
+// POST - Criar um novo pedido
+router.post('/', OrderController.createOrder);
 
-    const { data, error } = await supabase
-      .from('usuario')
-      .insert([{ id_usuario, nome, cargo, senha_hash }]);
+// POST - Adicionar produto ao pedido
+router.post('/:id/produtos', OrderController.addProductToOrder);
 
-    if (error) return res.status(400).json({ error: error.message });
-
-    res.status(201).json({ message: 'Usuário criado com sucesso', data });
-  } catch (err) {
-    res.status(500).json({ error: 'Erro interno do servidor' });
-  }
-});
+// GET - Listar produtos de um pedido
+router.get('/:id/produtos', OrderController.listOrderProducts);
 
 module.exports = router;
