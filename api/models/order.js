@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/* //const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
     cliente: { type: String, required: true },
@@ -11,3 +11,4 @@ const orderSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);
+ */

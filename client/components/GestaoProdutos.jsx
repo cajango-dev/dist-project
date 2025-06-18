@@ -20,16 +20,16 @@ const GestaoProdutos = ({ onChangePage }) => {
   const [form, setForm] = useState({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
 
-  // Novos estados para filtro
+  // Filtros
   const [filtroNome, setFiltroNome] = useState('');
-  const [filtroCategoria, setFiltroCategoria] = useState(''); // '' significa todas categorias
+  const [filtroCategoria, setFiltroCategoria] = useState('');
 
   useEffect(() => {
+    // Buscar produtos do backend
     axios.get('http://localhost:3000/products')
       .then((res) => {
         setProdutos(res.data);
 
-        // Extração das categorias únicas
         const categoriasUnicas = [
           ...new Set(res.data.map((produto) => produto.categoria).filter(Boolean))
         ];
@@ -45,51 +45,87 @@ const GestaoProdutos = ({ onChangePage }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.nome || !form.categoria || !form.preco) {
+    if (!form.nome || !form.categoria || !form.preco || form.estoque === '') {
       return alert('Preencha todos os campos.');
     }
 
-    if (modoEdicao) {
-      if (window.confirm('Tem certeza que deseja editar este produto?')) {
+    try {
+      if (modoEdicao) {
+        // Atualizar no backend sem categoria pois não existe no banco
+        await axios.put(`http://localhost:3000/products/${form.id}`, {
+          nome: form.nome,
+          preco: parseFloat(form.preco),
+          estoque: parseInt(form.estoque, 10)
+          // id_fornecedor pode ser adicionado se desejar
+        });
+
+        // Atualizar localmente
         setProdutos((prev) =>
           prev.map((p) =>
-            p.id === form.id ? { ...form, preco: +form.preco } : p
+            p.id === form.id
+              ? { ...p, nome: form.nome, preco: parseFloat(form.preco), estoque: parseInt(form.estoque, 10), categoria: form.categoria }
+              : p
           )
         );
+
         setModoEdicao(false);
-      }
-    } else {
-      const novoProduto = {
-        ...form,
-        id: Date.now(),
-        preco: +form.preco,
-      };
-      setProdutos((prev) => [...prev, novoProduto]);
+      } else {
+        // Criar no backend
+        const res = await axios.post('http://localhost:3000/products', {
+          nome: form.nome,
+          preco: parseFloat(form.preco),
+          quantidade_estoque: parseInt(form.estoque, 10),
+          id_fornecedor: 1 // Ajuste conforme necessário
+        });
 
-      // Atualiza a lista de categorias se for uma nova
-      if (!categorias.includes(form.categoria)) {
-        setCategorias((prev) => [...prev, form.categoria]);
+        const novoProduto = {
+          id: res.data.data[0].id_produto,
+          nome: form.nome,
+          preco: parseFloat(form.preco),
+          estoque: parseInt(form.estoque, 10),
+          categoria: form.categoria
+        };
+
+        setProdutos((prev) => [...prev, novoProduto]);
+
+        if (!categorias.includes(form.categoria)) {
+          setCategorias((prev) => [...prev, form.categoria]);
+        }
       }
+
+      setForm({ id: null, nome: '', categoria: '', estoque: '', preco: '' });
+    } catch (error) {
+      console.error('Erro ao salvar produto:', error);
+      alert('Erro ao salvar produto. Veja o console para detalhes.');
     }
-
-    setForm({ id: null, nome: '', categoria: '',  preco: '' });
   };
 
   const editarProduto = (produto) => {
-    setForm(produto);
+    setForm({
+      id: produto.id,
+      nome: produto.nome,
+      categoria: produto.categoria,
+      estoque: produto.estoque,
+      preco: produto.preco
+    });
     setModoEdicao(true);
   };
 
-  const excluirProduto = (id) => {
+  const excluirProduto = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      setProdutos((prev) => prev.filter((p) => p.id !== id));
+      try {
+        await axios.delete(`http://localhost:3000/products/${id}`);
+        setProdutos((prev) => prev.filter((p) => p.id !== id));
+      } catch (error) {
+        console.error('Erro ao excluir produto:', error);
+        alert('Erro ao excluir produto. Veja o console para detalhes.');
+      }
     }
   };
 
-  // Filtra produtos conforme os filtros ativos
   const produtosFiltrados = produtos.filter((p) => {
     const nomeMatch = p.nome.toLowerCase().includes(filtroNome.toLowerCase());
     const categoriaMatch = filtroCategoria ? p.categoria === filtroCategoria : true;
@@ -147,6 +183,13 @@ const GestaoProdutos = ({ onChangePage }) => {
           </select>
           <input
             type="number"
+            name="estoque"
+            placeholder="Estoque"
+            value={form.estoque}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
             step="0.01"
             name="preco"
             placeholder="Preço"
@@ -158,7 +201,6 @@ const GestaoProdutos = ({ onChangePage }) => {
           </button>
         </form>
 
-        {/* === CONTAINER DE FILTRO ADICIONADO === */}
         <div className="filtro-container" style={{ marginTop: 20, marginBottom: 20 }}>
           <select
             value={filtroCategoria}
@@ -177,6 +219,7 @@ const GestaoProdutos = ({ onChangePage }) => {
             <tr>
               <th>Nome</th>
               <th>Categoria</th>
+              <th>Estoque</th>
               <th>Preço (R$)</th>
               <th>Ações</th>
             </tr>
@@ -186,6 +229,7 @@ const GestaoProdutos = ({ onChangePage }) => {
               <tr key={p.id}>
                 <td>{p.nome}</td>
                 <td>{p.categoria}</td>
+                <td>{p.estoque}</td>
                 <td>{p.preco.toFixed(2)}</td>
                 <td>
                   <button className="editar" onClick={() => editarProduto(p)}>Editar</button>

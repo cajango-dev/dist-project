@@ -1,62 +1,119 @@
-// controllers/productController.js
+const { supabase } = require('../supabaseClient');
 
-// let products = []; 
-// let nextId = 1;
+// Criar produto
+exports.createProduct = async (req, res) => {
+  try {
+    const produtos = Array.isArray(req.body) ? req.body : [req.body];
 
-let nextId = 21;
+    for (const produto of produtos) {
+      if (!produto.nome || produto.preco == null || produto.quantidade_estoque == null || !produto.id_fornecedor) {
+        return res.status(400).json({ message: 'Campos obrigatórios: nome, preco, quantidade_estoque, id_fornecedor' });
+      }
+    }
 
-let products = [
-  { id: 1, nome: 'Cerveja Heineken 600ml', descricao: 'Garrafa de vidro', preco: 7.5, estoque: 120, categoria: 'Bebidas Alcoólicas' },
-  { id: 2, nome: 'Refrigerante Coca-Cola 2L', descricao: 'Pet', preco: 6.0, estoque: 80, categoria: 'Refrigerantes' },
-  { id: 3, nome: 'Água Mineral sem Gás 500ml', descricao: 'Garrafa plástica', preco: 2.0, estoque: 150, categoria: 'Águas' },
-  { id: 4, nome: 'Cerveja Skol Lata 350ml', descricao: 'Lata', preco: 3.5, estoque: 200, categoria: 'Bebidas Alcoólicas' },
-  { id: 5, nome: 'Whisky Johnnie Walker Red Label 1L', descricao: 'Garrafa', preco: 89.9, estoque: 20, categoria: 'Bebidas Alcoólicas' },
-  { id: 6, nome: 'Vodka Smirnoff 998ml', descricao: 'Garrafa', preco: 29.9, estoque: 35, categoria: 'Bebidas Alcoólicas' },
-  { id: 7, nome: 'Suco de Laranja Natural One 900ml', descricao: 'Garrafa', preco: 9.0, estoque: 60, categoria: 'Sucos' },
-  { id: 8, nome: 'Energético Red Bull 250ml', descricao: 'Lata', preco: 8.5, estoque: 50, categoria: 'Energéticos' },
-  { id: 9, nome: 'Cerveja Brahma Chopp 1L', descricao: 'Garrafa', preco: 6.8, estoque: 75, categoria: 'Bebidas Alcoólicas' },
-  { id: 10, nome: 'Guaraná Antarctica 350ml', descricao: 'Lata', preco: 3.0, estoque: 100, categoria: 'Refrigerantes' },
-  { id: 11, nome: 'Espumante Chandon Brut 750ml', descricao: 'Garrafa', preco: 69.9, estoque: 15, categoria: 'Bebidas Alcoólicas' },
-  { id: 12, nome: 'Vinho Chileno Gato Negro 750ml', descricao: 'Tinto seco', preco: 35.0, estoque: 25, categoria: 'Vinhos' },
-  { id: 13, nome: 'Água Tônica Schweppes 350ml', descricao: 'Lata', preco: 3.5, estoque: 45, categoria: 'Águas' },
-  { id: 14, nome: 'Cerveja Corona Extra 330ml', descricao: 'Garrafa Long Neck', preco: 6.0, estoque: 30, categoria: 'Bebidas Alcoólicas' },
-  { id: 15, nome: 'Refrigerante Pepsi Twist 2L', descricao: 'Pet', preco: 5.5, estoque: 65, categoria: 'Refrigerantes' },
-  { id: 16, nome: 'Catuaba Selvagem 1L', descricao: 'Vinho doce', preco: 12.0, estoque: 40, categoria: 'Vinhos' },
-  { id: 17, nome: 'Ice Smirnoff Sabor Limão 275ml', descricao: 'Garrafa', preco: 6.0, estoque: 28, categoria: 'Bebidas Alcoólicas' },
-  { id: 18, nome: 'Gin Tanqueray 750ml', descricao: 'Garrafa', preco: 119.9, estoque: 10, categoria: 'Bebidas Alcoólicas' },
-  { id: 19, nome: 'Cerveja Stella Artois 550ml', descricao: 'Garrafa', preco: 7.0, estoque: 55, categoria: 'Bebidas Alcoólicas' },
-  { id: 20, nome: 'Refrigerante Sprite 600ml', descricao: 'Pet', preco: 4.5, estoque: 90, categoria: 'Refrigerantes' }
-];
+    const { data, error } = await supabase
+      .from('produto')
+      .insert(produtos)
+      .select();
 
-exports.createProduct = (req, res) => {
-    const newProduct = {
-        id: nextId++,
-        ...req.body
-    };
-    products.push(newProduct);
-    res.status(201).json(newProduct);
+    if (error) throw error;
+
+    res.status(201).json({ message: 'Produtos criados com sucesso', data });
+  } catch (error) {
+    console.error('Erro ao criar produto:', error);
+    res.status(500).json({ message: 'Erro ao criar produto', error: error.message });
+  }
 };
 
-exports.getProducts = (req, res) => {
-    res.json(products);
+// Buscar todos os produtos
+exports.getProducts = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('produto')
+      .select('id_produto, nome, preco, quantidade_estoque, id_fornecedor');
+
+    if (error) {
+      throw error;
+    }
+
+    // Adaptar estrutura para o frontend
+    const produtosAdaptados = data.map(p => ({
+      id: p.id_produto,
+      nome: p.nome,
+      preco: parseFloat(p.preco),
+      estoque: p.quantidade_estoque,
+      categoria: "Outros" // Temporário até adicionar categoria no banco
+    }));
+
+    res.status(200).json(produtosAdaptados);
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    res.status(500).json({ message: 'Erro interno ao buscar produtos', error: error.message });
+  }
 };
 
-exports.getProductById = (req, res) => {
-    const product = products.find(p => p.id == req.params.id);
-    if (!product) return res.status(404).json({ error: 'Product not found' });
-    res.json(product);
+// Buscar produto por id
+exports.getProductById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const { data, error } = await supabase
+      .from('produto')
+      .select('*')
+      .eq('id_produto', id)
+      .single();
+
+    if (error) return res.status(404).json({ error: 'Produto não encontrado' });
+
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
 };
 
-exports.updateProduct = (req, res) => {
-    const index = products.findIndex(p => p.id == req.params.id);
-    if (index === -1) return res.status(404).json({ error: 'Product not found' });
-    products[index] = { ...products[index], ...req.body };
-    res.json(products[index]);
+// Atualizar produto (corrigido: sem categoria)
+exports.updateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { nome, preco, estoque, id_fornecedor } = req.body;
+
+    const updates = {};
+
+    if (nome !== undefined) updates.nome = nome;
+    if (preco !== undefined) updates.preco = preco;
+    if (estoque !== undefined) updates.quantidade_estoque = estoque;
+    if (id_fornecedor !== undefined) updates.id_fornecedor = id_fornecedor;
+
+    const { data, error } = await supabase
+      .from('produto')
+      .update(updates)
+      .eq('id_produto', id)
+      .select()
+      .single();
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ message: 'Produto atualizado', data });
+  } catch (err) {
+    console.error('Erro ao atualizar produto:', err);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
 };
 
-exports.deleteProduct = (req, res) => {
-    const index = products.findIndex(p => p.id == req.params.id);
-    if (index === -1) return res.status(404).json({ error: 'Product not found' });
-    products.splice(index, 1);
-    res.json({ message: 'Product deleted' });
+// Deletar produto
+exports.deleteProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const { data, error } = await supabase
+      .from('produto')
+      .delete()
+      .eq('id_produto', id);
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ message: 'Produto deletado' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
 };

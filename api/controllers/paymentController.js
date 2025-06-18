@@ -1,65 +1,104 @@
-const Payment = require('../models/payment');
-const Order = require('../models/order');
+const { supabase } = require('../supabaseClient');
 
 exports.createPayment = async (req, res) => {
-    try {
-        const payment = new Payment(req.body);
-        await payment.save();
+  try {
+    const paymentData = req.body;
 
-        // Se o pagamento foi concluído, atualiza status do pedido
-        if (payment.status === 'concluido') {
-            const order = await Order.findById(payment.orderId);
-            if (order) {
-                order.status = 'pago';
-                await order.save();
-            }
+    // Insere o pagamento
+    const { data: payment, error: paymentError } = await supabase
+      .from('payment')
+      .insert([paymentData])
+      .single();
+
+    if (paymentError) {
+      return res.status(400).json({ error: paymentError.message });
+    }
+
+    // Se o pagamento foi concluído, atualiza status do pedido
+    if (payment.status === 'concluido') {
+      const { data: order, error: orderError } = await supabase
+        .from('order')
+        .select('*')
+        .eq('id', payment.orderId)
+        .single();
+
+      if (!order || orderError) {
+        // Pode apenas ignorar se pedido não encontrado
+        console.warn('Pedido não encontrado para atualizar status');
+      } else {
+        // Atualiza o status do pedido para "pago"
+        const { error: updateOrderError } = await supabase
+          .from('order')
+          .update({ status: 'pago' })
+          .eq('id', payment.orderId);
+
+        if (updateOrderError) {
+          console.warn('Erro ao atualizar status do pedido:', updateOrderError.message);
         }
-
-        res.status(201).json(payment);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+      }
     }
+
+    res.status(201).json(payment);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// Função para pegar todos os pagamentos
 exports.getPayments = async (req, res) => {
-    try {
-        const payments = await Payment.find();
-        res.status(200).json(payments);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  try {
+    const { data, error } = await supabase.from('payment').select('*');
+
+    if (error) return res.status(400).json({ error: error.message });
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// Função para pegar um pagamento por ID
 exports.getPaymentById = async (req, res) => {
-    try {
-        const payment = await Payment.findById(req.params.id);
-        if (!payment) return res.status(404).json({ error: 'Pagamento não encontrado' });
-        res.status(200).json(payment);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  try {
+    const { data, error } = await supabase
+      .from('payment')
+      .select('*')
+      .eq('id', req.params.id)
+      .single();
+
+    if (error) return res.status(404).json({ error: 'Pagamento não encontrado' });
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// Função para atualizar um pagamento
 exports.updatePayment = async (req, res) => {
-    try {
-        const payment = await Payment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!payment) return res.status(404).json({ error: 'Pagamento não encontrado' });
-        res.status(200).json(payment);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  try {
+    const { data, error } = await supabase
+      .from('payment')
+      .update(req.body)
+      .eq('id', req.params.id)
+      .single();
+
+    if (error) return res.status(404).json({ error: 'Pagamento não encontrado ou erro ao atualizar' });
+    res.status(200).json(data);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// Função para deletar um pagamento
 exports.deletePayment = async (req, res) => {
-    try {
-        const payment = await Payment.findByIdAndDelete(req.params.id);
-        if (!payment) return res.status(404).json({ error: 'Pagamento não encontrado' });
-        res.status(200).json({ message: 'Pagamento deletado' });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  try {
+    const { data, error } = await supabase
+      .from('payment')
+      .delete()
+      .eq('id', req.params.id);
+
+    if (error) return res.status(404).json({ error: 'Pagamento não encontrado' });
+    res.status(200).json({ message: 'Pagamento deletado' });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

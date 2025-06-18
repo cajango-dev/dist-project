@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/* //const mongoose = require('mongoose');
 
 const productSummarySchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
@@ -12,3 +12,4 @@ const reportSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Report', reportSchema);
+ */

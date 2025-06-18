@@ -16,12 +16,12 @@ import './Estoque.css';
 
 const Estoque = ({ onChangePage }) => {
   const [estoque, setEstoque] = useState([]);
-  const [form, setForm] = useState({ id: null, produto: '', quantidade: '', local: '' });
+  const [form, setForm] = useState({ id: null, nome: '', estoque: '' });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [filtro, setFiltro] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3000/estoque')
+    axios.get('http://localhost:3000/products')
       .then((res) => setEstoque(res.data))
       .catch((err) => console.error('Erro ao buscar estoque:', err));
   }, []);
@@ -31,47 +31,64 @@ const Estoque = ({ onChangePage }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.produto || !form.quantidade || !form.local) {
-      return alert('Preencha todos os campos.');
+    if (!form.nome || form.estoque === '') {
+      return alert('Preencha os campos nome e estoque.');
     }
 
-    if (modoEdicao) {
-      if (window.confirm('Confirmar edição do item de estoque?')) {
-        setEstoque((prev) =>
-          prev.map((item) =>
-            item.id === form.id ? { ...form, quantidade: +form.quantidade } : item
-          )
-        );
-        setModoEdicao(false);
+    try {
+      if (modoEdicao) {
+        if (window.confirm('Confirmar edição do produto?')) {
+          await axios.put(`http://localhost:3000/products/${form.id}`, {
+            nome: form.nome,
+            estoque: Number(form.estoque),
+          });
+          setEstoque((prev) =>
+            prev.map((item) =>
+              item.id === form.id ? { ...form, estoque: Number(form.estoque) } : item
+            )
+          );
+          setModoEdicao(false);
+        }
+      } else {
+        const response = await axios.post('http://localhost:3000/products', {
+          nome: form.nome,
+          estoque: Number(form.estoque),
+        });
+        setEstoque((prev) => [...prev, response.data]);
       }
-    } else {
-      const novoItem = {
-        ...form,
-        id: Date.now(),
-        quantidade: +form.quantidade,
-      };
-      setEstoque((prev) => [...prev, novoItem]);
+      setForm({ id: null, nome: '', estoque: '' });
+    } catch (err) {
+      console.error('Erro ao salvar produto:', err);
+      alert('Erro ao salvar produto. Veja o console para detalhes.');
     }
-
-    setForm({ id: null, produto: '', quantidade: '', local: '' });
   };
 
   const editarItem = (item) => {
-    setForm(item);
+    setForm({
+      id: item.id,
+      nome: item.nome,
+      estoque: item.estoque.toString(),
+    });
     setModoEdicao(true);
   };
 
-  const excluirItem = (id) => {
-    if (window.confirm('Deseja remover este item do estoque?')) {
-      setEstoque((prev) => prev.filter((i) => i.id !== id));
+  const excluirItem = async (id) => {
+    if (window.confirm('Deseja remover este produto?')) {
+      try {
+        await axios.delete(`http://localhost:3000/products/${id}`);
+        setEstoque((prev) => prev.filter((item) => item.id !== id));
+      } catch (err) {
+        console.error('Erro ao deletar produto:', err);
+        alert('Erro ao deletar produto. Veja o console para detalhes.');
+      }
     }
   };
 
   const estoqueFiltrado = estoque.filter((item) =>
-    item.produto.toLowerCase().includes(filtro.toLowerCase())
+    item.nome.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
@@ -113,27 +130,21 @@ const Estoque = ({ onChangePage }) => {
         <form className="form-produto" onSubmit={handleSubmit}>
           <input
             type="text"
-            name="produto"
+            name="nome"
             placeholder="Nome do produto"
-            value={form.produto}
+            value={form.nome}
             onChange={handleChange}
           />
           <input
             type="number"
-            name="quantidade"
-            placeholder="Quantidade"
-            value={form.quantidade}
+            name="estoque"
+            placeholder="Quantidade em estoque"
+            value={form.estoque}
             onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="local"
-            placeholder="Local de Armazenamento"
-            value={form.local}
-            onChange={handleChange}
+            min="0"
           />
           <button type="submit">
-            {modoEdicao ? 'Salvar Edição' : 'Adicionar ao Estoque'}
+            {modoEdicao ? 'Salvar Edição' : 'Adicionar Produto'}
           </button>
         </form>
 
@@ -142,16 +153,14 @@ const Estoque = ({ onChangePage }) => {
             <tr>
               <th>Produto</th>
               <th>Quantidade</th>
-              <th>Local</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             {estoqueFiltrado.map((item) => (
               <tr key={item.id}>
-                <td>{item.produto}</td>
-                <td>{item.quantidade}</td>
-                <td>{item.local}</td>
+                <td>{item.nome}</td>
+                <td>{item.estoque}</td>
                 <td>
                   <button className="editar" onClick={() => editarItem(item)}>Editar</button>
                   <button className="excluir" onClick={() => excluirItem(item.id)}>Excluir</button>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Menu,
   Package,
@@ -14,53 +15,74 @@ import {
 import './Clientes.css';
 
 const Clientes = ({ onChangePage }) => {
-  const [clientes, setClientes] = useState([
-    { id: 1, nome: 'João Silva', email: 'joao@exemplo.com', status: 'Ativo' },
-    { id: 2, nome: 'Maria Souza', email: 'maria@exemplo.com', status: 'Ativo' },
-    { id: 3, nome: 'Carlos Pereira', email: 'carlos@exemplo.com', status: 'Inativo' },
-    { id: 4, nome: 'Ana Lima', email: 'ana@exemplo.com', status: 'Ativo' },
-    { id: 5, nome: 'Lucas Rocha', email: 'lucas@exemplo.com', status: 'Inativo' },
-    { id: 6, nome: 'Fernanda Torres', email: 'fernanda@exemplo.com', status: 'Ativo' }
-  ]);
-
-  const [form, setForm] = useState({ id: null, nome: '', email: '', status: 'Ativo' });
+  const [clientes, setClientes] = useState([]);
+  const [form, setForm] = useState({
+    id: null,
+    nome: '',
+    email: '',
+    status: 'Ativo',
+    cpf: '',
+    telefone: ''
+  });
   const [modoEdicao, setModoEdicao] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    axios.get('http://localhost:3000/cliente')
+      .then(res => setClientes(res.data))
+      .catch(err => console.error('Erro ao carregar clientes:', err));
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.nome || !form.email) {
       return alert('Preencha todos os campos.');
     }
 
-    if (modoEdicao) {
-      setClientes((prev) =>
-        prev.map((c) => (c.id === form.id ? { ...form } : c))
-      );
-    } else {
-      const novoCliente = { ...form, id: Date.now() };
-      setClientes((prev) => [...prev, novoCliente]);
+    try {
+      if (modoEdicao) {
+        await axios.put(`http://localhost:3000/cliente/${form.id}`, form);
+        setClientes(prev => prev.map(c => (c.id_cliente === form.id ? { ...form, id_cliente: form.id } : c)));
+      } else {
+        const res = await axios.post('http://localhost:3000/cliente', form);
+        setClientes(prev => [...prev, res.data]);
+      }
+      setForm({ id: null, nome: '', email: '', status: 'Ativo', cpf: '', telefone: '' });
+      setModoEdicao(false);
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar cliente:', error);
+      alert('Erro ao salvar cliente. Veja o console para detalhes.');
     }
-
-    setForm({ id: null, nome: '', email: '', status: 'Ativo' });
-    setModoEdicao(false);
-    setShowModal(false);
   };
 
   const editarCliente = (cliente) => {
-    setForm(cliente);
+    setForm({
+      id: cliente.id_cliente,
+      nome: cliente.nome,
+      email: cliente.email,
+      status: cliente.status || 'Ativo',
+      cpf: cliente.cpf || '',
+      telefone: cliente.telefone || ''
+    });
     setModoEdicao(true);
     setShowModal(true);
   };
 
-  const excluirCliente = (id) => {
+  const excluirCliente = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
-      setClientes((prev) => prev.filter((c) => c.id !== id));
+      try {
+        await axios.delete(`http://localhost:3000/cliente/${id}`);
+        setClientes(prev => prev.filter(c => c.id_cliente !== id));
+      } catch (error) {
+        console.error('Erro ao excluir cliente:', error);
+        alert('Erro ao excluir cliente. Veja o console para detalhes.');
+      }
     }
   };
 
@@ -87,9 +109,7 @@ const Clientes = ({ onChangePage }) => {
         <header className="section-wrapper header">
           <h1>Clientes</h1>
           <div>
-            <span className="voltar-link" onClick={() => onChangePage("home")}>
-              Início
-            </span>
+            <span className="voltar-link" onClick={() => onChangePage("home")}>Início</span>
             <span>Clientes</span>
           </div>
         </header>
@@ -97,7 +117,7 @@ const Clientes = ({ onChangePage }) => {
         <section className="section-wrapper">
           <h2>Gestão de Clientes</h2>
           <button className="add-button" onClick={() => {
-            setForm({ id: null, nome: '', email: '', status: 'Ativo' });
+            setForm({ id: null, nome: '', email: '', status: 'Ativo', cpf: '', telefone: '' });
             setModoEdicao(false);
             setShowModal(true);
           }}>
@@ -106,17 +126,23 @@ const Clientes = ({ onChangePage }) => {
 
           <div className="card-list">
             {clientes.map((c) => (
-              <div key={c.id} className="card card-shadow">
+              <div key={c.id_cliente} className="card card-shadow">
                 <div className="card-header">
                   <h3>{c.nome}</h3>
                 </div>
                 <div className="card-body">
                   <p><strong>Email:</strong> {c.email}</p>
-                  <p><strong>Status:</strong> <span className={c.status === "Ativo" ? "text-green" : "text-red"}>{c.status}</span></p>
+                  <p>
+                    <strong>Status:</strong> <span className={c.status === "Ativo" ? "text-green" : "text-red"}>
+                      {c.status || 'Ativo'}
+                    </span>
+                  </p>
+                  <p><strong>CPF:</strong> {c.cpf || '-'}</p>
+                  <p><strong>Telefone:</strong> {c.telefone || '-'}</p>
                 </div>
                 <div className="card-footer">
                   <button className="btn btn-edit" onClick={() => editarCliente(c)}>Editar</button>
-                  <button className="btn btn-delete" onClick={() => excluirCliente(c.id)}>Excluir</button>
+                  <button className="btn btn-delete" onClick={() => excluirCliente(c.id_cliente)}>Excluir</button>
                 </div>
               </div>
             ))}
@@ -156,6 +182,22 @@ const Clientes = ({ onChangePage }) => {
                   <option value="Ativo">Ativo</option>
                   <option value="Inativo">Inativo</option>
                 </select>
+                <label>CPF:</label>
+                <input
+                  type="text"
+                  name="cpf"
+                  placeholder="CPF"
+                  value={form.cpf}
+                  onChange={handleChange}
+                />
+                <label>Telefone:</label>
+                <input
+                  type="text"
+                  name="telefone"
+                  placeholder="Telefone"
+                  value={form.telefone}
+                  onChange={handleChange}
+                />
                 <div style={{ marginTop: "1rem" }}>
                   <button type="submit" className="edit-button" style={{ marginRight: "1rem" }}>
                     {modoEdicao ? 'Salvar Edição' : 'Adicionar Cliente'}
@@ -163,7 +205,7 @@ const Clientes = ({ onChangePage }) => {
                   <button type="button" className="add-button" onClick={() => {
                     setShowModal(false);
                     setModoEdicao(false);
-                    setForm({ id: null, nome: '', email: '', status: 'Ativo' });
+                    setForm({ id: null, nome: '', email: '', status: 'Ativo', cpf: '', telefone: '' });
                   }}>
                     Cancelar
                   </button>

@@ -34,8 +34,14 @@ export default function Fornecedores({ onChangePage }) {
   }, []);
 
   const handleEditFornecedor = (id) => {
-    const fornecedor = fornecedores.find(f => f._id === id);
-    setFormData({ nome: fornecedor.nome, cnpj: fornecedor.cnpj, status: fornecedor.status });
+    const fornecedor = fornecedores.find(f => f.id_fornecedor === id);
+    if (!fornecedor) return;
+
+    setFormData({
+      nome: fornecedor.nome,
+      cnpj: fornecedor.cnpj,
+      status: fornecedor.status || "Ativo"
+    });
     setEditandoId(id);
     setShowModal(true);
   };
@@ -48,14 +54,12 @@ export default function Fornecedores({ onChangePage }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       if (editandoId) {
         await axios.put(`http://localhost:3000/suppliers/${editandoId}`, formData);
       } else {
         await axios.post("http://localhost:3000/suppliers", formData);
       }
-
       setShowModal(false);
       fetchFornecedores(); // Atualiza a lista
     } catch (error) {
@@ -97,16 +101,16 @@ export default function Fornecedores({ onChangePage }) {
           <div className="card-list">
             {fornecedores.length > 0 ? (
               fornecedores.map((fornecedor) => (
-                <div key={fornecedor._id} className="card card-shadow">
+                <div key={fornecedor.id_fornecedor} className="card card-shadow">
                   <div className="card-header">
                     <h3>{fornecedor.nome}</h3>
                   </div>
                   <div className="card-body">
                     <p><strong>CNPJ:</strong> {fornecedor.cnpj}</p>
-                    <p><strong>Status:</strong> <span className={fornecedor.status === "Ativo" ? "text-green" : "text-red"}>{fornecedor.status}</span></p>
+                    <p><strong>Status:</strong> <span className={fornecedor.status === "Ativo" ? "text-green" : "text-red"}>{fornecedor.status || "Ativo"}</span></p>
                   </div>
                   <div className="card-footer">
-                    <button className="btn btn-edit" onClick={() => handleEditFornecedor(fornecedor._id)}>Editar</button>
+                    <button className="btn btn-edit" onClick={() => handleEditFornecedor(fornecedor.id_fornecedor)}>Editar</button>
                   </div>
                 </div>
               ))
@@ -114,7 +118,6 @@ export default function Fornecedores({ onChangePage }) {
               <p>Carregando fornecedores...</p>
             )}
           </div>
-
         </section>
 
         <section className="section-wrapper">
