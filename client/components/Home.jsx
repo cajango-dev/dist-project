@@ -102,23 +102,11 @@ export default function Home({ onChangePage }) {
           <button onClick={() => onChangePage("mesas")}>
             <Layout /> Mesas
           </button>
-          <button>
-            <ArrowDown /> Entradas
-          </button>
-          <button>
-            <ArrowUp /> Saídas
-          </button>
           <button onClick={() => onChangePage("clientes")}>
             <Users /> Clientes
           </button>
           <button onClick={() => onChangePage("fornecedores")}>
             <Truck /> Fornecedores
-          </button>
-          <button>
-            <LifeBuoy /> Suporte
-          </button>
-          <button>
-            <MessageSquare /> Feedback
           </button>
         </nav>
       </aside>

@@ -142,12 +142,9 @@ const GestaoProdutos = ({ onChangePage }) => {
           <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
           <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
           <button onClick={() => onChangePage("mesas")}> <Layout /> Mesas</button>
-          <button onClick={() => onChangePage('entradas')}><ArrowDown /> Entradas</button>
-          <button onClick={() => onChangePage('saidas')}><ArrowUp /> Saídas</button>
           <button onClick={() => onChangePage('clientes')}><Users /> Clientes</button>
           <button onClick={() => onChangePage('fornecedores')}><Truck /> Fornecedores</button>
-          <button onClick={() => onChangePage('suporte')}><LifeBuoy /> Suporte</button>
-          <button onClick={() => onChangePage('feedback')}><MessageSquare /> Feedback</button>
+
         </nav>
       </aside>
 
