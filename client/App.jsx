@@ -7,6 +7,7 @@ import Fornecedores from './components/Fornecedores';
 import GestaoProdutos from './components/GestaoProdutos';
 import Estoque from './components/Estoque';
 import Clientes from './components/Clientes';
+import Mesas from './components/Mesas';
 import './App.css';
 
 function App() {
@@ -36,6 +37,9 @@ function App() {
       )}
       {page === 'fornecedores' && (
         <Fornecedores onChangePage={setPage} />
+      )}
+      {page === 'mesas' && (
+        <Mesas onChangePage={setPage} />
       )}
       {page === 'gestaoProdutos' && (
         <GestaoProdutos onChangePage={setPage} />

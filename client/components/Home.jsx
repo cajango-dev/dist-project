@@ -10,6 +10,7 @@ import {
   MessageSquare,
   Menu,
   Warehouse,
+  Layout,
 } from "lucide-react";
 import {
   BarChart,
@@ -97,6 +98,9 @@ export default function Home({ onChangePage }) {
           </button>
           <button onClick={() => onChangePage("estoque")}>
             <Warehouse /> Estoque
+          </button>
+          <button onClick={() => onChangePage("mesas")}>
+            <Layout /> Mesas
           </button>
           <button>
             <ArrowDown /> Entradas

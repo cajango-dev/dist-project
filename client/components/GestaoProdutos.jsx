@@ -9,7 +9,8 @@ import {
   Truck,
   LifeBuoy,
   Warehouse,
-  MessageSquare
+  MessageSquare,
+  Layout,
 } from 'lucide-react';
 import './GestaoProdutos.css';
 
@@ -104,6 +105,7 @@ const GestaoProdutos = ({ onChangePage }) => {
         <nav className="sidebar-nav">
           <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
           <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
+          <button onClick={() => onChangePage("mesas")}> <Layout /> Mesas</button>
           <button onClick={() => onChangePage('entradas')}><ArrowDown /> Entradas</button>
           <button onClick={() => onChangePage('saidas')}><ArrowUp /> Saídas</button>
           <button onClick={() => onChangePage('clientes')}><Users /> Clientes</button>
