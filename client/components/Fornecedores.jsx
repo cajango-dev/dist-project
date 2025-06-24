@@ -77,7 +77,7 @@ export default function Fornecedores({ onChangePage }) {
           <button onClick={() => onChangePage("gestaoProdutos")}><Package /> Produtos</button>
           <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
           <button onClick={() => onChangePage("entradas")}> <ArrowDown /> Entradas</button>
-          <button onClick={() => onChangePage("entradas")}> <ArrowUp /> Saida</button>
+          <button onClick={() => onChangePage("saidas")}> <ArrowUp /> Saida</button>
           <button onClick={() => onChangePage("mesas")}> <Layout /> Mesas</button>
           <button onClick={() => onChangePage("clientes")}><Users /> Clientes</button>
           <button className="active" onClick={() => onChangePage("fornecedores")}><Truck /> Fornecedores</button>

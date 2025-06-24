@@ -102,8 +102,8 @@ export default function Home({ onChangePage }) {
           <button onClick={() => onChangePage("entradas")}>
             <ArrowDown /> Entradas
           </button>
-          <button onClick={() => onChangePage("saida")}>
-            <ArrowUp /> Saídas
+          <button onClick={() => onChangePage("saidas")}>
+            <ArrowUp /> Saida
           </button>
           <button onClick={() => onChangePage("mesas")}>
             <Layout /> Mesas
@@ -122,7 +122,6 @@ export default function Home({ onChangePage }) {
           <h1>Dashboard</h1>
           <div>
             <span>Início</span>
-            <span>Conta</span>
           </div>
         </header>
 

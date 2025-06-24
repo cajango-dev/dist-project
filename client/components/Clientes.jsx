@@ -96,7 +96,7 @@ const Clientes = ({ onChangePage }) => {
           <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
           <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
           <button onClick={() => onChangePage("entradas")}> <ArrowDown /> Entradas</button>
-          <button onClick={() => onChangePage("entradas")}> <ArrowUp /> Saida</button>
+          <button onClick={() => onChangePage("saidas")}> <ArrowUp /> Saida</button>
           <button onClick={() => onChangePage("mesas")}> <Layout /> Mesas</button>
           <button className="active" onClick={() => onChangePage('clientes')}><Users /> Clientes</button>
           <button onClick={() => onChangePage('fornecedores')}><Truck /> Fornecedores</button>

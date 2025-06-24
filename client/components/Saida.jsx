@@ -11,26 +11,28 @@ import {
   Menu,
   Layout,
 } from "lucide-react";
-import "./Saida.css";
+import "./Entradas.css";
 
 export default function Saidas({ onChangePage }) {
   const [saidas, setSaidas] = useState([]);
   const [produto, setProduto] = useState("");
   const [quantidade, setQuantidade] = useState("");
+  const [data, setData] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!produto || !quantidade) return;
+    if (!produto || !quantidade || !data) return;
 
     const novaSaida = {
       id: Date.now(),
       produto,
       quantidade,
-      data: new Date().toLocaleDateString(),
+      data,
     };
     setSaidas((prev) => [...prev, novaSaida]);
     setProduto("");
     setQuantidade("");
+    setData("");
   };
 
   return (
@@ -40,31 +42,13 @@ export default function Saidas({ onChangePage }) {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
-          <button onClick={() => onChangePage("gestaoProdutos")}>
-            <Package /> Produtos
-          </button>
-          <button onClick={() => onChangePage("estoque")}>
-            <Warehouse /> Estoque
-          </button>
+          <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
+          <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
+          <button onClick={() => onChangePage("entradas")}> <ArrowDown /> Entradas</button>
+          <button className="active" onClick={() => onChangePage('saidas')}><ArrowUp /> Saída</button>
           <button onClick={() => onChangePage("mesas")}> <Layout /> Mesas</button>
-          <button onClick={() => onChangePage("entradas")}>
-            <ArrowDown /> Entradas
-          </button>
-          <button className="active" onClick={() => onChangePage("saidas")}>
-            <ArrowUp /> Saídas
-          </button>
-          <button onClick={() => onChangePage("clientes")}>
-            <Users /> Clientes
-          </button>
-          <button onClick={() => onChangePage("fornecedores")}>
-            <Truck /> Fornecedores
-          </button>
-          <button onClick={() => onChangePage("suporte")}>
-            <LifeBuoy /> Suporte
-          </button>
-          <button onClick={() => onChangePage("feedback")}>
-            <MessageSquare /> Feedback
-          </button>
+          <button onClick={() => onChangePage("clientes")}><Users /> Clientes</button>
+          <button onClick={() => onChangePage('fornecedores')}><Truck /> Fornecedores</button>
         </nav>
       </aside>
 
@@ -72,7 +56,7 @@ export default function Saidas({ onChangePage }) {
         <header className="section-wrapper header">
           <h1>Saídas de Produtos</h1>
           <div>
-            <span onClick={() => onChangePage("home")} style={{ cursor: "pointer" }}>
+            <span className="voltar-link" onClick={() => onChangePage("home")}>
               Início
             </span>
             <span>Saídas</span>
@@ -96,13 +80,20 @@ export default function Saidas({ onChangePage }) {
               onChange={(e) => setQuantidade(e.target.value)}
               required
             />
-            <button type="submit">Registrar</button>
+            <input
+              type="date"
+              placeholder="Data"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              required
+            />
+            <button type="submit" className="add-button">Registrar</button>
           </form>
         </section>
 
         <section className="section-wrapper">
           <h2>Histórico de Saídas</h2>
-          <div className="saida-list">
+          <div className="card-list">
             {saidas.length > 0 ? (
               saidas.map((item) => (
                 <div key={item.id} className="card">

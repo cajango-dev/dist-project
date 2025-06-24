@@ -101,7 +101,7 @@ const Estoque = ({ onChangePage }) => {
           <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
           <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque </button>
           <button onClick={() => onChangePage("entradas")}> <ArrowDown /> Entradas</button>
-          <button onClick={() => onChangePage("entradas")}> <ArrowUp /> Saida</button>
+          <button onClick={() => onChangePage("saidas")}> <ArrowUp /> Saida</button>
           <button onClick={() => onChangePage("mesas")}> <Layout /> Mesas</button>
           <button onClick={() => onChangePage('clientes')}><Users /> Clientes</button>
           <button onClick={() => onChangePage('fornecedores')}><Truck /> Fornecedores</button>
@@ -114,7 +114,7 @@ const Estoque = ({ onChangePage }) => {
           <h1>Estoque</h1>
           <div>
             <span className="voltar-link" onClick={() => onChangePage("home")}>Início</span>
-            <span>Conta</span>
+            <span>Estoque</span>
           </div>
         </header>
 
