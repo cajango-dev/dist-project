@@ -8,6 +8,8 @@ import GestaoProdutos from './components/GestaoProdutos';
 import Estoque from './components/Estoque';
 import Clientes from './components/Clientes';
 import Mesas from './components/Mesas';
+import Entradas from './components/Entradas';
+import Saida from './components/Saida';
 import './App.css';
 
 function App() {
@@ -49,6 +51,12 @@ function App() {
       )}
       {page === 'clientes' && (
         <Clientes onChangePage={setPage} />
+      )}
+      {page === 'entradas' && (
+        <Entradas onChangePage={setPage} />
+      )}
+       {page === 'saidas' && (
+        <Saida onChangePage={setPage} />
       )}
       <div className="footer">Desenvolvido..</div>
     </div>

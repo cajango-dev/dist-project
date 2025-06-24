@@ -99,6 +99,12 @@ export default function Home({ onChangePage }) {
           <button onClick={() => onChangePage("estoque")}>
             <Warehouse /> Estoque
           </button>
+          <button onClick={() => onChangePage("entradas")}>
+            <ArrowDown /> Entradas
+          </button>
+          <button onClick={() => onChangePage("saida")}>
+            <ArrowUp /> Saídas
+          </button>
           <button onClick={() => onChangePage("mesas")}>
             <Layout /> Mesas
           </button>
