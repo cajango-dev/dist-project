@@ -11,6 +11,7 @@ import {
   Warehouse,
   MessageSquare,
   Layout,
+  ShoppingBag,
 } from 'lucide-react';
 import './GestaoProdutos.css';
 
@@ -139,6 +140,7 @@ const GestaoProdutos = ({ onChangePage }) => {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
+          <button onClick={() => onChangePage("compras")}><ShoppingBag /> Compras</button>
           <button onClick={() => onChangePage('gestaoProdutos')}><Package /> Produtos</button>
           <button onClick={() => onChangePage('estoque')}><Warehouse /> Estoque</button>
           <button onClick={() => onChangePage("entradas")}> <ArrowDown /> Entradas</button>

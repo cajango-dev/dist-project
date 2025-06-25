@@ -11,6 +11,7 @@ import {
   Menu,
   Warehouse,
   Layout,
+  ShoppingBag,
 } from "lucide-react";
 import {
   BarChart,
@@ -93,6 +94,9 @@ export default function Home({ onChangePage }) {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
+          <button onClick={() => onChangePage("compras")}>
+            <ShoppingBag /> Compras
+          </button>
           <button onClick={() => onChangePage("gestaoProdutos")}>
             <Package /> Produtos
           </button>

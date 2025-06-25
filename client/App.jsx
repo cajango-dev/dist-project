@@ -10,6 +10,7 @@ import Clientes from './components/Clientes';
 import Mesas from './components/Mesas';
 import Entradas from './components/Entradas';
 import Saida from './components/Saida';
+import Compras from './components/RegistroCompras';
 import './App.css';
 
 function App() {
@@ -57,6 +58,9 @@ function App() {
       )}
        {page === 'saidas' && (
         <Saida onChangePage={setPage} />
+      )}
+      {page === 'compras' && (
+        <Compras onChangePage={setPage} />
       )}
       <div className="footer">Desenvolvido..</div>
     </div>

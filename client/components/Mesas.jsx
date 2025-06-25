@@ -9,7 +9,8 @@ import {
   MessageSquare,
   Warehouse,
   Menu,
-  Layout
+  Layout,
+  ShoppingBag,
 } from "lucide-react";
 import "./Mesas.css";
 
@@ -62,6 +63,7 @@ export default function Mesas({ onChangePage }) {
           <Menu /> Estoque Bebidas
         </div>
         <nav className="sidebar-nav">
+          <button onClick={() => onChangePage("compras")}><ShoppingBag /> Compras</button>
           <button onClick={() => onChangePage("gestaoProdutos")}> <Package /> Produtos</button>
           <button onClick={() => onChangePage("estoque")}> <Warehouse /> Estoque</button>
           <button onClick={() => onChangePage("entradas")}> <ArrowDown /> Entradas</button>
