@@ -1,54 +1,11 @@
-const { supabase } = require('../supabaseClient');
+/* const mongoose = require('mongoose');
 
-class User {
-    static async list() {
-        const { data, error } = await supabase.from('usuario').select('*');
-        if (error) throw new Error(error.message);
-        return data;
-    }
+const userSchema = new mongoose.Schema({
+    nome: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    senha: { type: String, required: true },
+    role: { type: String, enum: ['admin', 'vendedor'], default: 'vendedor' }
+}, { timestamps: true });
 
-    static async getById(id_usuario) {
-        const { data, error } = await supabase
-            .from('usuario')
-            .select('*')
-            .eq('id_usuario', id_usuario)
-            .single();
-        if (error) throw new Error(error.message);
-        return data;
-    }
-
-    static async create({ id_usuario, nome, cargo, senha_hash }) {
-        const { data, error } = await supabase
-            .from('usuario')
-            .insert([{ id_usuario, nome, cargo, senha_hash }])
-            .select();
-        if (error) throw new Error(error.message);
-        return data[0];
-    }
-
-    static async update(id_usuario, updateData) {
-        Object.keys(updateData).forEach(key => {
-            if (updateData[key] === undefined) delete updateData[key];
-        });
-
-        const { data, error } = await supabase
-            .from('usuario')
-            .update(updateData)
-            .eq('id_usuario', id_usuario)
-            .select()
-            .single();
-        if (error) throw new Error(error.message);
-        return data;
-    }
-
-    static async delete(id_usuario) {
-        const { error } = await supabase
-            .from('usuario')
-            .delete()
-            .eq('id_usuario', id_usuario);
-        if (error) throw new Error(error.message);
-        return { message: 'Usuário deletado com sucesso' };
-    }
-}
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);
+ */

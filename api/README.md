@@ -1,84 +1,66 @@
 # API - ERP Distribuidora de Bebidas
 
-Back-end completo com CRUDs, usando Supabase (PostgreSQL gerenciado) como banco de dados, com lógica de negócio separada em models, controllers e rotas. Relatórios atualizados automaticamente com dados consolidados.
+Back-end completo com CRUDs, relacionamentos automáticos e relatório atualizado automaticamente.
 
 ---
 
 ## CRUDS DISPONÍVEIS:
 
-- Users  
-- Products  
-- Suppliers  
-- Orders  
-- Payments  
-- Clients  
-- Stock (Estoque)  
-- Tables (Mesas)  
-- Reports (relatório consolidado)  
+- Users
+- Products
+- Suppliers
+- Orders
+- Payments
+- Reports (atualizado automaticamente)
 
 ---
 
 ## MODELOS:
 
-- `/models/user.js`  
-- `/models/product.js`  
-- `/models/supplier.js`  
-- `/models/order.js`  
-- `/models/payment.js`  
-- `/models/client.js`  
-- `/models/stock.js`  
-- `/models/table.js`  
-- `/models/report.js`  
+- `/models/user.js`
+- `/models/product.js`
+- `/models/supplier.js`
+- `/models/order.js`
+- `/models/payment.js`
+- `/models/report.js`
 
-Todos implementados com acesso direto ao Supabase via SDK oficial, utilizando queries SQL abstratas para CRUD e agregações.
+Todos usando Mongoose + MongoDB, com relacionamentos via ObjectId.
 
 ---
 
 ## CONTROLLERS:
 
-- `/controllers/userController.js`  
-- `/controllers/productController.js`  
-- `/controllers/supplierController.js`  
-- `/controllers/orderController.js` (inclui lógica de atualização de estoque e relatórios)  
-- `/controllers/paymentController.js`  
-- `/controllers/clientController.js`  
-- `/controllers/stockController.js`  
-- `/controllers/tableController.js`  
-- `/controllers/reportController.js`  
-
-Controllers tratam requisições HTTP, validam dados e chamam os models, retornando respostas apropriadas.
+- `/controllers/userController.js`
+- `/controllers/productController.js`
+- `/controllers/supplierController.js`
+- `/controllers/orderController.js` (atualiza estoque e relatório ao criar pedido)
+- `/controllers/paymentController.js`
+- `/controllers/reportController.js`
 
 ---
 
 ## ROTAS:
 
-| Rota            | Métodos                   | Descrição                       |  
-|-----------------|---------------------------|---------------------------------|  
-| `/users`        | GET, POST, PUT, DELETE    | Gerenciamento de usuários       |  
-| `/products`     | GET, POST, PUT, DELETE    | Gerenciamento de produtos       |  
-| `/suppliers`    | GET, POST, PUT, DELETE    | Gerenciamento de fornecedores   |  
-| `/orders`       | GET, POST, PUT, DELETE    | Pedidos, atualização de estoque |  
-| `/payments`     | GET, POST, PUT, DELETE    | Pagamentos                      |  
-| `/clients`      | GET, POST, PUT, DELETE    | Gerenciamento de clientes       |  
-| `/stock`        | GET, POST, DELETE         | Movimentações de estoque        |  
-| `/tables`       | GET, POST, PUT, DELETE    | Gerenciamento de mesas          |  
-| `/reports`      | GET                       | Relatório consolidado           |  
+| Rota          | Métodos                   |
+|---------------|--------------------------|
+| `/api/users`   | GET, POST, PUT, DELETE   |
+| `/api/products`| GET, POST, PUT, DELETE   |
+| `/api/suppliers`| GET, POST, PUT, DELETE  |
+| `/api/orders`  | GET, POST, PUT, DELETE   |
+| `/api/payments`| GET, POST, PUT, DELETE   |
+| `/api/reports` | GET                      |
 
 ---
 
 ## RELATÓRIO AUTOMÁTICO:
 
-✅ O relatório `/reports` é atualizado automaticamente ao criar ou alterar pedidos, incluindo:
+✅ Atualizado ao criar um pedido:  
+- Soma total de vendas
+- Incrementa número de pedidos
+- Atualiza quantidade vendida por produto
 
-- Soma total de vendas  
-- Quantidade total de pedidos  
-- Quantidade vendida por produto  
+------
+O código do Banco ta com o VINI,
+acho que você vai ter que criar um /database na pasta api, ligar os CRUDS no banco, se quiser gerar dados 
+ficticios, usa o mockaroo.com, bem tranquilo pra preencher dados.
 
----
-
-## CONFIGURAÇÃO E DADOS
-
-- Banco de dados: Supabase (PostgreSQL)  
-- Variáveis de ambiente necessárias:  
-  - `SUPABASE_URL`  
-  - `SUPABASE_ANON_KEY`  

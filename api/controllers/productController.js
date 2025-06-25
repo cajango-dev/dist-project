@@ -1,63 +1,119 @@
-const Product = require('../models/product');
+const { supabase } = require('../supabaseClient');
 
-class ProductController {
-  static async listProducts(req, res) {
-    try {
-      const data = await Product.list();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+// Criar produto
+exports.createProduct = async (req, res) => {
+  try {
+    const produtos = Array.isArray(req.body) ? req.body : [req.body];
 
-  static async getProductById(req, res) {
-    try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
-
-      const data = await Product.getById(id);
-      res.json(data);
-    } catch (error) {
-      res.status(404).json({ error: error.message });
-    }
-  }
-
-  static async createProduct(req, res) {
-    try {
-      const { nome, descricao, preco, quantidade_estoque, id_fornecedor } = req.body;
-      if (!nome || preco === undefined) {
-        return res.status(400).json({ error: 'Campos obrigatórios: nome, preco' });
+    for (const produto of produtos) {
+      if (!produto.nome || produto.preco == null || produto.quantidade_estoque == null || !produto.id_fornecedor) {
+        return res.status(400).json({ message: 'Campos obrigatórios: nome, preco, quantidade_estoque, id_fornecedor' });
       }
-      const data = await Product.create({ nome, descricao, preco, quantidade_estoque, id_fornecedor });
-      res.status(201).json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
     }
+
+    const { data, error } = await supabase
+      .from('produto')
+      .insert(produtos)
+      .select();
+
+    if (error) throw error;
+
+    res.status(201).json({ message: 'Produtos criados com sucesso', data });
+  } catch (error) {
+    console.error('Erro ao criar produto:', error);
+    res.status(500).json({ message: 'Erro ao criar produto', error: error.message });
   }
+};
 
-  static async updateProduct(req, res) {
-    try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
+// Buscar todos os produtos
+exports.getProducts = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('produto')
+      .select('id_produto, nome, preco, quantidade_estoque, id_fornecedor');
 
-      const data = await Product.update(id, req.body);
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    if (error) {
+      throw error;
     }
+
+    // Adaptar estrutura para o frontend
+    const produtosAdaptados = data.map(p => ({
+      id: p.id_produto,
+      nome: p.nome,
+      preco: parseFloat(p.preco),
+      estoque: p.quantidade_estoque,
+      categoria: "Outros" // Temporário até adicionar categoria no banco
+    }));
+
+    res.status(200).json(produtosAdaptados);
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    res.status(500).json({ message: 'Erro interno ao buscar produtos', error: error.message });
   }
+};
 
-  static async deleteProduct(req, res) {
-    try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
+// Buscar produto por id
+exports.getProductById = async (req, res) => {
+  try {
+    const id = req.params.id;
 
-      const result = await Product.delete(id);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+    const { data, error } = await supabase
+      .from('produto')
+      .select('*')
+      .eq('id_produto', id)
+      .single();
+
+    if (error) return res.status(404).json({ error: 'Produto não encontrado' });
+
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
-}
+};
 
-module.exports = ProductController;
+// Atualizar produto (corrigido: sem categoria)
+exports.updateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { nome, preco, estoque, id_fornecedor } = req.body;
+
+    const updates = {};
+
+    if (nome !== undefined) updates.nome = nome;
+    if (preco !== undefined) updates.preco = preco;
+    if (estoque !== undefined) updates.quantidade_estoque = estoque;
+    if (id_fornecedor !== undefined) updates.id_fornecedor = id_fornecedor;
+
+    const { data, error } = await supabase
+      .from('produto')
+      .update(updates)
+      .eq('id_produto', id)
+      .select()
+      .single();
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ message: 'Produto atualizado', data });
+  } catch (err) {
+    console.error('Erro ao atualizar produto:', err);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
+// Deletar produto
+exports.deleteProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const { data, error } = await supabase
+      .from('produto')
+      .delete()
+      .eq('id_produto', id);
+
+    if (error) return res.status(400).json({ error: error.message });
+
+    res.json({ message: 'Produto deletado' });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
